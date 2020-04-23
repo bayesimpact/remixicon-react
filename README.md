@@ -1,40 +1,34 @@
-# mdi-react [![npm package](https://img.shields.io/npm/v/mdi-react.svg?style=flat-square)](https://npmjs.org/package/mdi-react) [![Material Design Icons version](https://img.shields.io/badge/mdi-v5.1.45-blue.svg?style=flat-square)](https://materialdesignicons.com) [![build status](https://img.shields.io/travis/levrik/mdi-react/master.svg?style=flat-square)](https://travis-ci.org/levrik/mdi-react)
-[Material Design Icons](https://materialdesignicons.com) for React/Preact packaged as single components
+# remixicon-react [![npm package](https://img.shields.io/npm/v/remixicon-react.svg?style=flat-square)](https://npmjs.org/package/remixicon-react) [![Remix Icons version](https://img.shields.io/badge/remixicon-v2.4.0-blue.svg?style=flat-square)](https://remixicon.com/) [![build status](https://img.shields.io/travis/bayesimpact/remixicon-react/master.svg?style=flat-square)](https://travis-ci.org/bayesimpact/remixicon-react)
+[Remix Icons](https://remixicon.com/) for React packaged as single components
 
-**New v7.1.0 released: See [CHANGELOG.md](./CHANGELOG.md)**
+This repo is based on the very good [mdi-react](https://github.com/levrik/mdi-react) package.
 
 ## Installation
 
 ```bash
-npm install mdi-react
+npm install remixicon-react
 # or if you use Yarn
-yarn add mdi-react
+yarn add remixicon-react
 ```
-
-<!-- Preact intro -->
-Support for [Preact](https://preactjs.com/) is available via the `mdi-preact` package.  
-The `mdi-preact` package supports `class` as alternative to `className`.
-<!-- Preact intro -->
 
 ## Usage
 
-Just search for an icon on [materialdesignicons.com](https://materialdesignicons.com) and look for its name.  
-The name translates to PascalCase followed by the suffix `Icon` in `mdi-react`.  
-Also it's possible to import with an alias. You can find them on the detail page of the respective icon.
+Just search for an icon on [remixicon.com](https://remixicon.com) and look for its name.  
+The name translates to PascalCase followed by the suffix `Icon` in `remixicon-react`.  
 
-For example the icons named `alert` and `alert-circle`:
+For example the icons named `alert-line` and `alert-fill`:
 
 ```javascript
-import AlertIcon from 'mdi-react/AlertIcon';
-import AlertCircleIcon from 'mdi-react/AlertCircleIcon';
+import AlertLineIcon from 'remixicon-react/AlertLineIcon';
+import AlertFillIcon from 'remixicon-react/AlertFillIcon';
 
 const MyComponent = () => {
   return (
     <div>
       {/* The default color is the current text color (currentColor) */}
-      <AlertIcon color="#fff" />
+      <AlertLineIcon color="#fff" />
       {/* The default size is 24 */}
-      <AlertCircleIcon className="some-class" size={16} />
+      <AlertFillIcon className="some-class" size={16} />
       {/* This sets the icon size to the current font size */}
       <AlertIcon size="1em" />
     </div>
@@ -50,10 +44,10 @@ To change the color on hover you can just use your own class and plain CSS.
 }
 ```
 
-You can also add default styling via the `mdi-icon` class.
+You can also add default styling via the `remixicon-icon` class.
 
 ```css
-.mdi-icon {
+.remixicon-icon {
   background-color: green;
 }
 ```

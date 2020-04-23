@@ -2,21 +2,21 @@ const semver = require('semver');
 const fs = require('fs');
 const path = require('path');
 
-const [, , mdiVersion, nextMdiVersion, pkgVersion] = process.argv;
+const [, , remixiconVersion, nextRemixiconVersion, pkgVersion] = process.argv;
 
-if (!mdiVersion || !nextMdiVersion || !pkgVersion) {
+if (!remixiconVersion || !nextRemixiconVersion || !pkgVersion) {
   console.log('Missing arguments');
   process.exit(1);
 }
 
-if (![mdiVersion, nextMdiVersion, pkgVersion].every(semver.valid)) {
+if (![remixiconVersion, nextRemixiconVersion, pkgVersion].every(semver.valid)) {
   console.log('Not all arguments are valid semver');
   process.exit(1);
 }
 
 const nextPkgVersion = semver.inc(
   pkgVersion,
-  semver.diff(mdiVersion, nextMdiVersion)
+  semver.diff(remixiconVersion, nextRemixiconVersion)
 );
 
 const changelogContent = fs.readFileSync(
@@ -27,7 +27,7 @@ const changelogContent = fs.readFileSync(
 const CHANGELOG_LIST_MARKER = '<!-- Changelog list -->';
 const newChangelogEntry = `${CHANGELOG_LIST_MARKER}
 
-## ${nextPkgVersion} [![Material Design Icons version](https://img.shields.io/badge/mdi-v${nextMdiVersion}-blue.svg?style=flat-square)](https://materialdesignicons.com)
+## ${nextPkgVersion} [![Material Design Icons version](https://img.shields.io/badge/remixicon-v${nextRemixiconVersion}-blue.svg?style=flat-square)](https://materialdesignicons.com)
 
 _No changes_`;
 
@@ -49,8 +49,8 @@ const readmeContent = fs.readFileSync(
 const nextReadmeContent = readmeContent
   .replace(`New v${pkgVersion} released`, `New v${nextPkgVersion} released`)
   .replace(
-    `https://img.shields.io/badge/mdi-v${mdiVersion}-blue.svg?style=flat-square`,
-    `https://img.shields.io/badge/mdi-v${nextMdiVersion}-blue.svg?style=flat-square`
+    `https://img.shields.io/badge/remixicon-v${remixiconVersions}-blue.svg?style=flat-square`,
+    `https://img.shields.io/badge/remixicon-v${nextRemixiconVersion}-blue.svg?style=flat-square`
   );
 
 fs.writeFileSync(path.resolve(__dirname, '..', 'README.md'), nextReadmeContent);

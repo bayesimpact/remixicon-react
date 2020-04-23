@@ -3,10 +3,10 @@ const { sync: mkdirp } = require('mkdirp');
 const path = require('path');
 const rollup = require('rollup');
 const babel = require('rollup-plugin-babel');
-const meta = require('@mdi/svg/meta.json');
 
-const svgPathRegex = /\sd="(.*)"/;
-const startsWithNumberRegex = /^\d/;
+const svgPathRegex = /<path\s([^>]*)>/g;
+const svgAttrRegex = /(?:\s*|^)([^= ]*)="([^"]*)"/g;
+const validIconName = /^[A-Z]/;
 
 function getRollupInputConfig(target) {
   return {
@@ -32,92 +32,110 @@ function normalizeName(name) {
   }).join('') + 'Icon';
 }
 
+function checkAllowedAttr(attr, value, content, name) {
+  if (attr === 'd') {
+    return true
+  }
+  if (attr === 'fill') {
+    if (value === 'none') {
+      // Will be filtered out.
+      return true
+    }
+    if (value === '#000') {
+      // Default value.
+      return true
+    }
+  }
+  if (attr === 'fill-rule' && value === 'nonzero') {
+    // Default value.
+    return true
+  }
+  return false
+}
+
+function extractPath(content, name) {
+  const allPaths = []
+  while (true) {
+    const svgPathMatches = svgPathRegex.exec(content);
+    const svgPath = svgPathMatches && svgPathMatches[1];
+    if (!svgPath) {
+      break
+    }
+    const attrs = {}
+    while (true) {
+      const svgAttrMatches = svgAttrRegex.exec(svgPath);
+      if (!svgAttrMatches) {
+        break
+      }
+      if (!checkAllowedAttr(svgAttrMatches[1], svgAttrMatches[2])) {
+        throw new Error(
+          `Unknown SVG attr in ${name}: ${svgAttrMatches[1]}="${svgAttrMatches[2]}"\n${content}`,
+        )
+      }
+      attrs[svgAttrMatches[1]] = svgAttrMatches[2]
+    }
+    if (attrs.fill === 'none') {
+      continue
+    }
+    allPaths.push(attrs)
+  }
+  if (allPaths.length !== 1 || !allPaths[0].d) {
+    throw new Error(
+      `Wrong number of path in ${name}: ${allPaths.length}\n` +
+      `${JSON.stringify(allPaths, undefined, 2)}\n${content}`,
+    )
+  }
+  return allPaths[0].d
+}
+
 function collectComponents(svgFilesPath) {
   const svgFiles = fs.readdirSync(svgFilesPath);
 
   const icons = [];
   for (const svgFile of svgFiles) {
+    const svgFilePath = path.join(svgFilesPath, svgFile);
+
+    // Handle sub-directories.
+    const stats = fs.statSync(svgFilePath);
+    if (stats.isDirectory()) {
+      icons.push(...collectComponents(svgFilePath));
+      continue;
+    }
+
     const origName = svgFile.slice(0, -4);
     const name = normalizeName(origName);
 
-    const content = fs.readFileSync(path.join(svgFilesPath, svgFile));
-    const svgPathMatches = svgPathRegex.exec(content);
-    const svgPath = svgPathMatches && svgPathMatches[1];
-    // skip on empty svgPath
-    if (!svgPath) throw new Error('Empty SVG path');
+    if (!validIconName.exec(name)) {
+      console.log(`Skipping icon with invalid name: ${svgFilePath}`)
+      continue;
+    }
+
+    const content = fs.readFileSync(svgFilePath);
+    let svgPath
+    try {
+      svgPath = extractPath(content, svgFilePath);
+    } catch (err) {
+      // Ignore file.
+      console.log(err)
+      continue;
+    }
 
     const icon = {
       name: name,
-      aliases: [],
       fileName: name + '.js',
       defFileName: name + '.d.ts',
       svgPath
     };
 
-    const iconMeta = meta.find(entry => entry.name === origName);
-    if (iconMeta) {
-      icon.aliases = iconMeta.aliases;
-    }
-
     icons.push(icon);
   }
 
-  const aliases = [];
-  const removeAliases = [];
-  for (const icon of icons) {
-    for (const alias of icon.aliases) {
-      const normalizedAlias = normalizeName(alias);
-
-      // if the alias starts with a number, ignore it since JavaScript
-      // doesn't support variable names starting with a number
-      if (startsWithNumberRegex.test(normalizedAlias)) {
-        continue;
-      }
-
-      // check if alias duplicates top-level icon name and ignore
-      if (icons.find(icon => icon.name.toLowerCase() === normalizedAlias.toLowerCase())) {
-        continue;
-      }
-
-      // check if alias itself is duplicated
-      const duplicateAlias = aliases.find(alias2 => alias2.name.toLowerCase() === normalizedAlias.toLowerCase());
-      if (duplicateAlias) {
-        // check if duplicate alias is on same icon
-        // if not note for removal from final list
-        if (duplicateAlias.aliasFor !== icon.name) {
-          console.warn(`Duplicate alias ${normalizedAlias} (${icon.name}, ${duplicateAlias.aliasFor})`);
-          removeAliases.push(duplicateAlias.name);
-          continue;
-        }
-
-        continue;
-      }
-
-      aliases.push({
-        name: normalizedAlias,
-        aliasFor: icon.name,
-        fileName: normalizedAlias + '.js',
-        defFileName: normalizedAlias + '.d.ts',
-        svgPath: icon.svgPath
-      });
-    }
-
-    // removed no longer required aliases array
-    delete icon.aliases;
-  }
-
-  // clean up remaining alias duplicates
-  for (const aliasName of removeAliases) {
-    const index = aliases.find(alias => aliasName === alias);
-    aliases.splice(index, 1);
-  }
-
-  return [...icons, ...aliases];
+  return icons;
 }
 
 async function generate(target, jsCb, tsCb, tsAllCb) {
   const basePath = path.resolve(__dirname, '..');
-  const svgFilesPath = path.resolve(basePath, 'node_modules/@mdi/svg/svg');
+  const svgFilesPath = path.resolve(basePath, 'node_modules/remixicon/icons');
   const buildPath = path.resolve(basePath, 'build');
   mkdirp(buildPath);
   const publishPath = path.resolve(basePath, 'publish-' + target);

@@ -7,11 +7,11 @@ if [ "$1" == "--with-build-and-publish" ] && [ -z "$2" ]; then
   exit 1
 fi
 
-mdi_prev="$(git show $GITHUB_SHA~1:package.json | jq -r '.dependencies["@mdi/svg"]')"
-mdi_next="$(git show $GITHUB_SHA:package.json | jq -r '.dependencies["@mdi/svg"]')"
+remixicon_prev="$(git show $GITHUB_SHA~1:package.json | jq -r '.dependencies["remixicon"]')"
+remixicon_next="$(git show $GITHUB_SHA:package.json | jq -r '.dependencies["remixicon"]')"
 
-if [ "$mdi_prev" == "$mdi_next" ]; then
-  echo "no mdi update found. skipping."
+if [ "$remixicon_prev" == "$remixicon_next" ]; then
+  echo "no Remix Icon update found. skipping."
   exit 0
 fi
 
@@ -27,7 +27,7 @@ echo "Install dependencies..."
 yarn install --frozen-lockfile
 
 echo "Update README.md, CHANGELOG.md, publish-react/package.json and publish-preact/package.json..."
-node scripts/create-mdi-release.js $mdi_prev $mdi_next $react_version
+node scripts/create-remixicon-release.js $remixicon_prev $remixicon_next $react_version
 echo "Sync changes to README-preact.md..."
 node scripts/generate-preact-readme.js
 
@@ -36,16 +36,16 @@ if [ "$1" == "--with-commit" ]; then
   # Set up Git
   cat > $HOME/.netrc <<- EOF
 		machine github.com
-		login levrik
+		login pcorpet
 		password $GITHUB_TOKEN
 		machine api.github.com
-		login levrik
+		login pcorpet
 		password $GITHUB_TOKEN
 EOF
   chmod 600 $HOME/.netrc
 
-  git config --global user.email "me@levrik.io"
-  git config --global user.name "Levin Rickert"
+  git config --global user.email "pascal@bayesimpact.org"
+  git config --global user.name "Pascal Corpet"
 
   echo "Create and push release commit..."
 

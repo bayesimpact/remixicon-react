@@ -7,7 +7,6 @@ cache: yarn
 env:
   matrix:
     - library=react
-    - library=preact
 
 script:
   - yarn build-$library

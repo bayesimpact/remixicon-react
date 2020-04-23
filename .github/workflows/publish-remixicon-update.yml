@@ -1,4 +1,4 @@
-name: Publish mdi update
+name: Publish Remix Icon update
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      - run: ./scripts/create-mdi-release.sh --with-commit
+      - run: ./scripts/create-remixicon-release.sh --with-commit
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build-and-publish:
@@ -21,13 +21,13 @@ jobs:
     needs: [create-release-commit]
     strategy:
       matrix:
-        package: [react, preact]
+        package: [react]
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-      - run: ./scripts/create-mdi-release.sh --with-build-and-publish ${{ matrix.package }}
+      - run: ./scripts/create-remixicon-release.sh --with-build-and-publish ${{ matrix.package }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

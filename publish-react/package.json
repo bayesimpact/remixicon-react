@@ -1,27 +1,26 @@
 {
-  "name": "mdi-react",
-  "version": "7.1.0",
-  "description": "Material Design Icons for React",
+  "name": "remixicon-react",
+  "version": "0.1.0",
+  "description": "Remix Icon for React",
   "keywords": [
-    "mdi",
+    "remixicon",
     "react",
-    "material",
-    "design",
+    "remix",
     "icons"
   ],
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/levrik/mdi-react.git"
+    "url": "git+ssh://git@github.com/bayesimpact/remixicon-react.git"
   },
   "scripts": {
-    "prepublishOnly": "cd .. && yarn build-react"
+    "prepublishOnly": "cd .. && npm run build-react"
   },
-  "author": "Levin Rickert <me@levrik.io>",
+  "author": "Pascal Corpet <pascal@bayesimpact.org>",
   "license": "(MIT AND OFL-1.1)",
   "bugs": {
-    "url": "https://github.com/levrik/mdi-react/issues"
+    "url": "https://github.com/bayesimpact/remixicon-react/issues"
   },
-  "homepage": "https://github.com/levrik/mdi-react",
+  "homepage": "https://github.com/bayesimpact/remixicon-react",
   "peerDependencies": {
     "react": ">=0.14.0"
   },
