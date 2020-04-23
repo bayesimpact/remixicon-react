@@ -16,20 +16,12 @@ if [ "$remixicon_prev" == "$remixicon_next" ]; then
 fi
 
 react_version="$(jq -r '.version' publish-react/package.json)"
-preact_version="$(jq -r '.version' publish-preact/package.json)"
-
-if [ "$react_version" != "$preact_version" ]; then
-  echo "versions of react and preact package don't match."
-  exit 1
-fi
 
 echo "Install dependencies..."
 yarn install --frozen-lockfile
 
-echo "Update README.md, CHANGELOG.md, publish-react/package.json and publish-preact/package.json..."
+echo "Update README.md, CHANGELOG.md and publish-react/package.json..."
 node scripts/create-remixicon-release.js $remixicon_prev $remixicon_next $react_version
-echo "Sync changes to README-preact.md..."
-node scripts/generate-preact-readme.js
 
 if [ "$1" == "--with-commit" ]; then
   echo "Set up Git..."
