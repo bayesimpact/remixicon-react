@@ -49,7 +49,7 @@ const readmeContent = fs.readFileSync(
 const nextReadmeContent = readmeContent
   .replace(`New v${pkgVersion} released`, `New v${nextPkgVersion} released`)
   .replace(
-    `https://img.shields.io/badge/remixicon-v${remixiconVersions}-blue.svg?style=flat-square`,
+    `https://img.shields.io/badge/remixicon-v${remixiconVersion}-blue.svg?style=flat-square`,
     `https://img.shields.io/badge/remixicon-v${nextRemixiconVersion}-blue.svg?style=flat-square`
   );
 
