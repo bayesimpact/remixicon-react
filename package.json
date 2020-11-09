@@ -18,7 +18,7 @@
     "build-react": "npm run clean-react && node scripts/generate-react.js && cpr README.md publish-react/README.md -o && cpr CHANGELOG.md publish-react/CHANGELOG.md -o && cpr LICENSE publish-react/LICENSE -o"
   },
   "dependencies": {
-    "remixicon": "2.4.0"
+    "remixicon": "2.5.0"
   },
   "devDependencies": {
     "@types/node": "^9.6.6",
