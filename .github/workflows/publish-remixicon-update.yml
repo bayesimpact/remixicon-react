@@ -28,6 +28,6 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-      - run: ./scripts/create-remixicon-release.sh --with-build-and-publish ${{ matrix.package }}
+      - run: ./scripts/create-remixicon-release.sh --with-build-and-publish react
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
