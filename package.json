@@ -34,6 +34,6 @@
     "rimraf": "^3.0.2",
     "rollup": "^2.33.1",
     "rollup-plugin-babel": "^3.0.3",
-    "semver": "^7.3.2"
+    "semver": "^7.3.4"
   }
 }
