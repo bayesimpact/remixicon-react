@@ -30,7 +30,7 @@
     "babel-preset-react": "^6.11.1",
     "cpr": "^3.0.1",
     "mkdirp": "^1.0.4",
-    "react": "^16.0.0",
+    "react": "^17.0.2",
     "rimraf": "^3.0.2",
     "rollup": "^2.52.6",
     "rollup-plugin-babel": "^3.0.3",
