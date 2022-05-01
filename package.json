@@ -32,7 +32,7 @@
     "mkdirp": "^1.0.4",
     "react": "^16.0.0",
     "rimraf": "^3.0.2",
-    "rollup": "^2.52.6",
+    "rollup": "^2.71.1",
     "rollup-plugin-babel": "^3.0.3",
     "semver": "^7.3.5"
   }
